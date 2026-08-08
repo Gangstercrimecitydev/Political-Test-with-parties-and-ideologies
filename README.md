@@ -1,6 +1,6 @@
 # 🧭 Interactive Political Compass (v1.0)
 
-An interactive, web-based political compass designed to help users map their political alignment across economic and social axes and compare their results with international political parties and EU parliamentary groups.
+An interactive, web-based political test designed to help users map their political alignment across economic and social axes and compare their results with international political parties and EU parliamentary groups.
 
 > [!WARNING]
 > **Important Disclaimer:**
@@ -10,7 +10,7 @@ An interactive, web-based political compass designed to help users map their pol
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 - **24 Detailed Statements:** Carefully split into two balanced categories:
   - 📈 **12 Questions on Economy, Finance & Labor**
@@ -26,7 +26,7 @@ An interactive, web-based political compass designed to help users map their pol
 The compass currently supports position overlays for:
 - **34 Individual Countries** (e.g., Germany, USA, UK, Switzerland, France, Poland, etc.)
 - **EU Parliamentary Groups Overview** (e.g., EPP, S&D, Renew, ECR, PfE, Greens/EFA, ESN, The Left)
-- **National Parties within EU Frameworks**
+- **National Parties within EU Factions**
 
 ---
 
