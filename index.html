@@ -1,1 +1,1691 @@
+<!DOCTYPE html>
+<!--Idea developed by politicalstats-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Political Test</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #4f46e5;
+            --border-color: #e2e8f0;
 
+            --track-fill: #2c3e50;
+            --track-empty: #e2e8f0;
+            --thumb-color: #4a90c4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+            padding: 40px;
+            display: flex;
+            flex-direction: row;
+            gap: 50px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+                padding: 20px;
+                gap: 30px;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+
+        .left-panel {
+            flex: 1.4;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+            padding: 0 35px;
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .right-panel {
+                position: relative;
+                top: 0;
+                padding: 0;
+            }
+        }
+
+        header {
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-color);
+            margin-top: 25px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+            border-color: #cbd5e1;
+        }
+
+        .question-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .slider-labels-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin-bottom: 6px;
+        }
+
+        .slider-label {
+            font-size: 13px;
+            font-weight: 500;
+            width: 48%;
+            line-height: 1.5;
+        }
+
+        .slider-label.left {
+            text-align: left;
+            color: #e11d48;
+        }
+
+        .slider-label.right {
+            text-align: right;
+            color: #2563eb;
+        }
+
+        .slider-wrapper {
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            background: var(--track-empty);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--thumb-color);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--thumb-color);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .controls-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .country-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .country-select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background-color: #ffffff;
+            color: var(--text-color);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .toggle-ideology-btn {
+            background-color: #f1f5f9;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+
+        .toggle-ideology-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .toggle-ideology-btn.active {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+
+        .compass-wrapper {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .compass-inner {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            border-radius: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid #999999;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .compass-inner.blurred {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        /* Four quadrants in the compass colors from the template */
+        .quadrant {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            z-index: 0;
+        }
+        .quadrant-tl { top: 0; left: 0; background-color: #f0877c; }
+        .quadrant-tr { top: 0; left: 50%; background-color: #7fb2e0; }
+        .quadrant-bl { top: 50%; left: 0; background-color: #a8dd8a; }
+        .quadrant-br { top: 50%; left: 50%; background-color: #b6a0d6; }
+
+        /* Grid overlay over the quadrants */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+            background-image:
+                repeating-linear-gradient(to right, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 10%),
+                repeating-linear-gradient(to bottom, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 10%);
+        }
+
+        .axis-x {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #000000;
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+
+        .axis-y {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #000000;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .scale-label {
+            position: absolute;
+            font-size: 11px;
+            font-weight: 700;
+            font-style: italic;
+            color: #1a1a6e;
+            z-index: 6;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .scale-label-economic {
+            top: 50%;
+            left: 27%;
+            transform: translate(-50%, -100%);
+        }
+
+        .scale-label-social {
+            left: 50%;
+            top: 75%;
+            transform: translate(-100%, -50%) rotate(-90deg);
+            transform-origin: center;
+        }
+
+        .axis-label {
+            position: absolute;
+            font-size: 15px;
+            font-weight: 800;
+            color: #555555;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .label-top { top: -30px; left: 50%; transform: translateX(-50%); }
+        .label-bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
+        .label-left { left: -45px; top: 50%; transform: translateY(-50%); }
+        .label-right { right: -55px; top: 50%; transform: translateY(-50%); }
+
+        .ideology-zone {
+            position: absolute;
+            border: 1px dashed rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .ideology-zone.hidden {
+            display: none;
+        }
+
+        .ideology-zone:not(.hidden) {
+            pointer-events: auto;
+        }
+
+        .ideology-tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.92);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -130%);
+            transition: opacity 0.15s;
+        }
+
+        .ideology-tooltip.flip-below {
+            transform: translate(-50%, 30%);
+        }
+
+        .ideology-tooltip.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dot {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #e8291c;
+            border: 3px solid #000000;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            display: none;
+            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .party-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            display: block;
+            cursor: pointer;
+        }
+
+        /* Raise the z-index on hover so the tooltip appears above all other parties */
+        .party-dot:hover {
+            z-index: 90;
+        }
+
+        .party-dot::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s;
+            z-index: 40;
+            pointer-events: none;
+        }
+
+        .party-dot:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-overlay-box {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .mobile-overlay-box.hidden {
+            display: none;
+        }
+
+        .reveal-btn {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            transition: background-color 0.2s;
+        }
+
+        .reveal-btn:hover {
+            background-color: #3730a3;
+        }
+
+        .result-box {
+            margin-top: 15px;
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: none;
+        }
+
+        .result-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .result-coords {
+            font-family: monospace;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 400px;
+            display: none;
+        }
+
+        .reset-btn:hover {
+            background: #f1f5f9;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="left-panel">
+        <header>
+            <h1>Political Test</h1>
+            <p>Move the sliders for all 24 statements. Your exact position (red dot) and the comparison with the parties of the selected country become visible after clicking "Show results". Using the button, you can also show and hide the ideology zones – clicking on a zone shows its name as a tooltip.</p>
+        </header>
+
+        <!-- Economy, Finance & Labor -->
+        <div>
+            <div class="section-title">Economy, Finance &amp; Labor</div>
+
+            <div class="question-card">
+                <div class="question-title">1. Taxes &amp; Welfare State</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Strong taxation of high incomes to fund the welfare state.</span><span class="slider-label right">Low taxes for everyone to encourage productivity.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">2. Inheritance &amp; Wealth</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">High levies on millionaire wealth and inheritances.</span><span class="slider-label right">Protection of private property from state intervention.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">3. Housing Market</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">State rent caps &amp; massive construction of social housing.</span><span class="slider-label right">Abolition of rent controls – the market regulates supply.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">4. Market Regulation &amp; Bureaucracy</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Strict rules for employee and consumer protection.</span><span class="slider-label right">Businesses need less bureaucracy and more freedom to operate.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">5. Minimum Wage</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">The minimum wage must be significantly raised by law.</span><span class="slider-label right">Wages should be negotiated entirely freely between employers and unions.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">6. Pensions &amp; Retirement Provision</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Secure a high level of pay-as-you-go state pensions.</span><span class="slider-label right">Focus on private, funded pension schemes &amp; a higher retirement age.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">7. Infrastructure &amp; State Economy</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Infrastructure should be entirely state-owned.</span><span class="slider-label right">Private providers run networks more efficiently and with better customer focus.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">8. Global Free Trade</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Protection of domestic industries through tariffs and subsidies.</span><span class="slider-label right">Comprehensive removal of all tariffs and global trade barriers.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">9. Climate Protection &amp; Economic Growth</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Climate protection and environmental regulations have absolute priority.</span><span class="slider-label right">Economic growth and industry take priority over environmental regulations.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">10. Public Finances &amp; the Future</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Push state investment in the future, even through new debt.</span><span class="slider-label right">Consistently reduce debt and lower taxes.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">11. Local Nature &amp; Environmental Protection</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Local environmental protection comes first – economic building projects must yield.</span><span class="slider-label right">Economic growth and building projects take priority over local environmental protection.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">12. Subsidies</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">The state should specifically promote and protect key domestic industries.</span><span class="slider-label right">The market should decide success and failure without state subsidies.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="x-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Society & Culture -->
+        <div>
+            <div class="section-title">Society &amp; Culture</div>
+
+            <div class="question-card">
+                <div class="question-title">13. Migration &amp; Asylum</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Push for border closures and sharply reduce asylum numbers.</span><span class="slider-label right">Ensure humanitarian admission and massively ease integration.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">14. European Union &amp; Sovereignty</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Bring powers back from Brussels, strengthen nation-states.</span><span class="slider-label right">More integration, up to a European federal state.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">15. Family &amp; Gender Roles</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Especially support traditional family structures and marriage.</span><span class="slider-label right">Equal treatment of all lifestyles and partnerships.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">16. Feminism &amp; Gender-Neutral Language</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Ban gender-neutral language in official use, do without gender quotas.</span><span class="slider-label right">Support for quotas and gender-sensitive language.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">17. Internal Security</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">More police presence, harsher penalties and video surveillance.</span><span class="slider-label right">Protection of digital civil rights, priority for social prevention.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">18. Drug Policy</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Strict prohibition and punishment of all drugs.</span><span class="slider-label right">Controlled legalization, prevention and an end to criminal enforcement.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">19. Church &amp; State</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Preserve traditional Christian-Western values.</span><span class="slider-label right">Secularization and abolition of church privileges.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">20. Freedom of Speech vs. Protection from Hate Speech</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">The state must strictly sanction disinformation and verbal attacks online.</span><span class="slider-label right">Freedom of speech must be absolutely protected, as long as no direct violence is threatened.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">21. Abortion</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">The protection of unborn life should be more strongly enshrined in law.</span><span class="slider-label right">Abortions should be more easily accessible.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">22. Gun Laws</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">Private gun ownership should be strictly regulated or banned.</span><span class="slider-label right">Citizens should have the right to own guns freely and without strict requirements.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">23. Military Conscription</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">General military conscription should be reintroduced.</span><span class="slider-label right">The armed forces should remain a voluntary professional army.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">24. Strong Leader or Distributed Power</div>
+                <div class="slider-container">
+                    <div class="slider-labels-row"><span class="slider-label left">A strong leader should be able to act quickly and decisively, even without lengthy deliberations.</span><span class="slider-label right">Power should be distributed across many institutions to prevent abuse of power.</span></div>
+                    <div class="slider-wrapper"><input type="range" class="y-slider" min="-10" max="10" value="0"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right side: compass & results -->
+    <div class="right-panel">
+        <div class="controls-container">
+            <span class="country-label">Select comparison country</span>
+            <select class="country-select" id="country-select" onchange="changeCountry()">
+                <option value="none">None</option>
+                <option value="eu">EU Factions</option>
+				<option value="re">renew europe</option>
+				<option value="er">ECR</option>
+				<option value="ge">Greens</option>
+				<option value="ew">ESN</option>
+				<option value="lf">LEFT</option>
+				<option value="sd">SuD</option>
+				<option value="ep">EPP</option>
+				<option value="pf">PfE</option>
+                <option value="ch">Switzerland</option>
+                <option value="ie">Ireland</option>
+                <option value="is">Iceland</option>
+                <option value="bg">Bulgaria</option>
+                <option value="dk">Denmark</option>
+                <option value="uk">United Kingdom</option>
+                <option value="se">Sweden</option>
+                <option value="fi">Finland</option>
+                <option value="gr">Greece</option>
+                <option value="de" selected>Germany</option>
+                <option value="es">Spain</option>
+                <option value="pt">Portugal</option>
+                <option value="at">Austria</option>
+                <option value="be">Belgium</option>
+                <option value="it">Italy</option>
+                <option value="fr">France</option>
+                <option value="nl">Netherlands</option>
+				<option value="kr">Ukraine</option>
+                <option value="tk">Turkey</option>                
+                <option value="no">Norway</option>
+                <option value="ro">Romania</option>
+                <option value="ru">Russia</option>
+                <option value="hu">Hungary</option>
+                <option value="ee">Estonia</option>
+				<option value="lt">Latvia</option>
+				<option value="la">Lithuania</option>
+                <option value="pl">Poland</option>
+                <option value="ka">Croatia</option>
+                <option value="rs">Serbia</option>
+                <option value="cz">Czech Republic</option>
+                <option value="lu">Luxembourg</option>
+                <option value="us">USA</option>
+                <option value="ca">Canada</option>
+                <option value="au">Australia</option>
+            </select>
+
+            <button class="toggle-ideology-btn" id="toggle-ideology-btn" onclick="toggleIdeologies()">
+                Show ideology zones
+            </button>
+        </div>
+
+        <div class="compass-wrapper">
+            <div class="axis-label label-top">Authoritarian</div>
+            <div class="axis-label label-bottom">Libertarian</div>
+            <div class="axis-label label-left">Left</div>
+            <div class="axis-label label-right">Right</div>
+
+            <div class="compass-inner blurred" id="compass-container">
+                <div class="quadrant quadrant-tl"></div>
+                <div class="quadrant quadrant-tr"></div>
+                <div class="quadrant quadrant-bl"></div>
+                <div class="quadrant quadrant-br"></div>
+                <div class="grid-overlay"></div>
+                <div class="axis-x"></div>
+                <div class="axis-y"></div>
+                <div class="scale-label scale-label-economic"></div>
+                <div class="scale-label scale-label-social"></div>
+                <div class="dot" id="compass-dot"></div>
+            </div>
+            <div class="ideology-tooltip" id="ideology-tooltip"></div>
+        </div>
+
+        <div class="mobile-overlay-box" id="mobile-overlay">
+            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a;">View results?</h3>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 0 10px;">First move the sliders on the left, then click here to unlock your position.</p>
+            <button class="reveal-btn" onclick="revealResults()">Show results</button>
+        </div>
+
+        <div class="result-box" id="results">
+            <div class="result-title">Your Coordinates</div>
+            <div class="result-coords" id="result-coordinates">Economic Left/Right: 0.00</div>
+            <div class="result-coords" id="result-coordinates-2" style="margin-top: 8px;">Social Libertarian/Authoritarian: 0.00</div>
+        </div>
+
+        <button class="reset-btn" id="reset-btn" onclick="resetCompass()">Reset</button>
+    </div>
+</div>
+
+<script>
+    const xSliders = document.querySelectorAll('.x-slider');
+    const ySliders = document.querySelectorAll('.y-slider');
+    const allSliders = document.querySelectorAll('input[type="range"]');
+    const compassDot = document.getElementById('compass-dot');
+    const compassContainer = document.getElementById('compass-container');
+    const resultCoords = document.getElementById('result-coordinates');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const resultsBox = document.getElementById('results');
+    const resetBtn = document.getElementById('reset-btn');
+    const toggleIdeologyBtn = document.getElementById('toggle-ideology-btn');
+    const ideologyTooltip = document.getElementById('ideology-tooltip');
+    const resultCoords2 = document.getElementById('result-coordinates-2');
+    const countrySelect = document.getElementById('country-select');
+
+    let showIdeologies = false;
+
+    // Ideology zones with HEX color codes
+    const ideologyZonesData = [
+        { name: 'National Liberalism', xMin: 2, xMax: 7, yMin: -2, yMax: 1, color: '#688ede' },
+        { name: 'Social Democracy', xMin: -6, xMax: -2, yMin: -1, yMax: 5, color: '#EF4444' },
+        { name: 'Neoliberalism', xMin: 7, xMax: 10, yMin: -6, yMax: 4, color: '#3B82F6' },
+        { name: 'Social Populism', xMin: -2, xMax: 1.5, yMin: -7.5, yMax: -4, color: '#9c7140' },
+        { name: 'Left-Wing Conservatism', xMin: -6, xMax: -2, yMin: -7.5, yMax: -1, color: '#4a0a4f' },
+        { name: 'Social Conservatism', xMin: -2, xMax: 1.5, yMin: -4, yMax: -2, color: '#05a3ff' },
+        { name: 'Stalinism', xMin: -10, xMax: -7.5, yMin: -10, yMax: -7.5, color: '#4d0101' },
+        { name: 'Marxism', xMin: -10, xMax: -6, yMin: -2, yMax: 1, color: '#851d1d' },
+        { name: 'Leninism', xMin: -10, xMax: -6, yMin: -7.5, yMax: -2, color: '#960b0b' },
+        { name: 'Anarcho-Capitalism', xMin: 7, xMax: 10, yMin: 7, yMax: 10, color: '#ffda0a' },
+        { name: 'Strasserism', xMin: -7.5, xMax: -4, yMin: -10, yMax: -7.5, color: '#361904' },
+        { name: 'Democratic Socialism', xMin: -10, xMax: -6, yMin: 1, yMax: 10, color: '#EC4899' },
+        { name: 'Left-Liberalism', xMin: -6, xMax: -2, yMin: 5, yMax: 10, color: '#22C55E' },
+        { name: 'Fascism', xMin: -1.5, xMax: 1.5, yMin: -10, yMax: -7.5, color: '#78350F' },
+        
+        // Additional ideologies
+        { name: 'Social Liberalism', xMin: -2, xMax: 2, yMin: 2, yMax: 10, color: '#ffac05' },
+        { name: 'Classical Liberalism', xMin: 2, xMax: 7, yMin: 1, yMax: 6, color: '#EAB308' },
+        { name: 'Falangism', xMin: -4, xMax: -1.5, yMin: -10, yMax: -7.5, color: '#451A03' },
+        { name: 'Libertarianism', xMin: 7, xMax: 10, yMin: 4, yMax: 7, color: '#8B5CF6' },
+        { name: 'Individualism', xMin: 2, xMax: 7, yMin: 6, yMax: 10, color: '#C7AA16' },
+        { name: 'Right-Wing Conservatism', xMin: 1.5, xMax: 7, yMin: -10, yMax: -2, color: '#2759c4' },
+        { name: 'Pinochetism', xMin: 7, xMax: 10, yMin: -10, yMax: -6, color: '#0F2C6B' },
+        { name: 'Centrism', xMin: -2, xMax: 2, yMin: -2, yMax: 2, color: '#808080' }
+    ];
+
+    const countriesData = {
+        'none': [],
+        'eu': [
+            { name: 'EVP', x: 2.5, y: -3.5, color: '#9ECFF8' },
+            { name: 'S&D', x: -3, y: 2.5, color: '#FF0000' },
+            { name: 'PfE', x: 2.7, y: -8, color: '#2C1D56' },
+            { name: 'EKR', x: 5.4, y: -6.0, color: '#7CA9EC' },
+            { name: 'RE', x: 4, y: 3.5, color: '#FFCC00' },
+            { name: 'ESN', x: 5, y: -9, color: '#27517B' },
+            { name: 'LEFT', x: -7.5, y: 4.0, color: '#E64F48' },
+            { name: 'G/EFA', x: -4, y: 7, color: '#93DBB6' }
+        ],
+		'kr': [
+            { name: 'SN', x: 1, y: 1, color: '#088d4a' },
+            { name: 'YeS', x: 3.5, y: -3.5, color: '#007DFF' },
+            { name: 'RozPol', x: -0.5, y: -1, color: '#999999' },
+            { name: 'Natsionalnyi korpus', x: -2, y: -8.5, color: '#1071F4' },
+            { name: 'Batk.', x: -3.5, y: -3.5, color: '#E45395' },
+            { name: 'Prytula Bloc', x: 2.5, y: 3, color: '#FFD700' },
+            { name: 'Svoboda', x: -3, y: -8, color: '#00FFFF' },
+            { name: 'RP', x: -2.5, y: -5, color: '#A349A4' },
+			{ name: 'OPZZh', x: -1.5, y: -6.5, color: '#00008B' },
+			{ name: 'UDAR', x: 2.5, y: -1.5, color: '#ED0000' }
+        ],
+		 'la': [
+            { name: 'TS-LKD', x: 2, y: 0, color: '#0080FF' },
+            { name: 'LSDS', x: -3, y: -0.5, color: '#FF101A' },
+            { name: 'LRLS', x: 5.5, y: 6, color: '#F29402' },
+            { name: 'DSVL', x: -1, y: -0.1, color: '#0A1172' },
+            { name: 'LVZS', x: -2.1, y: -6, color: '#61A347' },
+            { name: 'NA', x: -3, y: -6, color: '#FF5F00' },
+            { name: 'LP', x: 5, y: 7.5, color: '#E3006B' },
+            { name: 'NS(Nacionalinis susivienijimas)', x: 3, y: -7, color: '#B81E23' }
+        ],
+		'lt': [
+            { name: 'LZP/LRA/LP', x: 1.4, y: -3.5, color: '#004a20' },
+            { name: 'SV', x: 3, y: -6, color: '#6767AB' },
+            { name: 'LPV', x: 2.2, y: -6.2, color: '#9e2f39' },
+            { name: 'Progresīvie', x: -5.4, y: 6.0, color: '#E64632' },
+            { name: 'NA', x: 1.8, y: -7, color: '#EFC800' },
+            { name: 'JV', x: 2.2, y: 2.5, color: '#99CC33' },
+            { name: 'ZZS', x: 1.3, y: -4, color: '#258B4C' },
+            { name: 'MMN', x: 1, y: -2.5, color: '#ED1C24' },
+			{ name: 'Latvijas attīstībai', x: 5.5, y: 4.5, color: '#ffcc00' },
+			{ name: 'Stabilitātei', x: -3, y: -5.8, color: '#f57c01' },
+			{ name: 'LKS', x: -4.3, y: -5.7, color: '#2A52BE' },
+			{ name: 'SP', x: -3, y: -3, color: '#ED1C24' }
+        ],
+		'pf': [
+            { name: 'VB(Belgium)', x: 3.0, y: -7.5, color: '#FFE000' },
+            { name: 'Dansk Folkeparti(Denmark)', x: 1.0, y: -4.5, color: '#E4BD4A' },
+            { name: 'EKRE(Estonia)', x: 1.5, y: -7.5, color: '#0072C6' },
+            { name: 'RN(France)', x: 1.5, y: -5.5, color: '#0D378A' },
+            { name: 'Foní Logikís(Greece)', x: 5.0, y: -7.8, color: '#0094FF' },
+            { name: 'Lega(Italy)', x: 3.0, y: -6.5, color: '#026611' },
+            { name: 'LPV(Latvia)', x: 2.2, y: -6.2, color: '#9e2f39' },
+            { name: 'PVV(Netherlands)', x: 1.5, y: -5.5, color: '#0f2440' },
+			{ name: 'FPÖ(Austria)', x: 2.5, y: -7.0, color: '#005CA5' },  
+			{ name: 'Chega(Portugal)', x: 5.5, y: -7.5, color: '#102C57' },
+			{ name: 'SNS(Slovenia)', x: 2.5, y: -6.5, color: '#FFE721' },
+			{ name: 'Vox(Spain)', x: 7.0, y: -8.0, color: '#63BE21' },
+            { name: 'ANO(Czech Republic)', x: -2.0, y: -4, color: '#261060' },
+			{ name: 'Fidesz(Hungary)', x: -2.0, y: -6, color: '#FD5E0F' }
+        ],
+		'ep': [
+            { name: 'LE(Belgium)', x: 0.5, y: -2.0, color:  '#00F3FF' },
+            { name: 'CD&V(Belgium)', x: 1.5, y: -3.5, color: '#FF8C00' },
+            { name: 'GERB(Bulgaria)', x: 3, y: -2.8, color: '#0597ff' },
+            { name: 'Konservative Folkeparti(Denmark)', x: 4.0, y: -2, color: '#00583C' },
+            { name: 'Liberal Alliance(Denmark)', x: 6.5, y: 0.5, color: '#FA4800' },
+            { name: 'CDU/CSU(Germany)', x: 3.05, y: -3.73, color: '#1c1c1c' },
+            { name: 'Isamaaliit (E)', x: 4.0, y: -4.5, color: '#00AEEF' },
+            { name: 'KOK(Finland)', x: 5, y: -0.5, color: '#136389' },
+			{ name: 'LR(France)', x: 4.0, y: -3.5, color: '#0066CC' },
+			{ name: 'Néa Dimokratía(Greece)', x: 4.0, y: -1, color: '#005AC0' },
+			{ name: 'Fine Gael(Ireland)', x: 1.5, y: 1.5, color: '#6699FF' },
+		    { name: 'Forza Italia(Italy)', x: 4.0, y: -3.0, color: '#0797f7' },
+			{ name: 'HDZ(Croatia)', x: -1, y: -3, color: '#044394' },
+			{ name: 'Jaunā Vienotība(Latvia)', x: 2.2, y: 2.5, color: '#99CC33' },
+			{ name: 'TS-LKD(Lithuania)', x: 2, y: 0, color: '#0080FF' },
+			{ name: 'CSV(Luxembourg)', x: 1, y: -2.5, color: '#ee7d00' },
+			{ name: 'CDA(Netherlands)', x: 1.5, y: -2.0, color: '#007c5c' },
+            { name: 'BBB(Netherlands)', x: 2.0, y: -5, color: '#9bbb2d' },
+			{ name: 'ÖVP(Austria)', x: 3.5, y: -3.5, color: '#63C3D0' },
+			{ name: 'PSL(Poland)', x: -1, y: -3.0, color: '#1BB100' },
+            { name: 'KO(Poland) (Koalicja Obywatelska)', x: 1.7, y: 2, color: '#FFA056' },
+		    { name: 'Aliança Democrática(Portugal)', x: 3.5, y: -4.5, color: '#0A4A8F' },
+		    { name: 'PNL(Romania)', x: 3.5, y: -1.0, color: '#0054A6' },
+			{ name: 'Moderata samlingspartiet(Sweden)', x: 4.5, y: -2.6, color: '#019CDB' },
+            { name: 'Kristdemokraterna(Sweden)', x: 3.5, y: -4.5, color: '#000077' },
+			{ name: 'KDH(Slovakia)', x: 1.4, y: -6, color: '#FFE17C' },
+			{ name: 'SDS(Slovenia)', x: 5, y: -6, color: '#FFD500' },
+			{ name: 'Partido Popular(Spain)', x: 4.0, y: -3.0, color: '#00A8FF' },
+			{ name: 'TOP 09(Czech Republic)', x: 4, y: 1.3, color: '#993366' },
+			{ name: 'Tisza(Hungary)', x: 1, y: -0.5, color: '#D24548' },
+			{ name: 'DISY(Cyprus)', x: 5.5, y: -2, color: '#1569C7' },
+        ],
+		'sd': [
+            { name: 'Vooruit(Belgium)', x: -3.5, y: 2.5, color: '#E10C0F' },
+            { name: 'PS(Belgium)', x: -5.5, y: 3.0, color: '#FF0004' },
+            { name: 'BSP(Bulgaria)', x: -4, y: -6, color: '#910c0c' },
+            { name: 'Socialdemokraterne(Denmark)', x: -2.0, y: 1.5, color: '#A8161D' },
+            { name: 'SPD(Germany)', x: -2.78, y: 2.53, color: '#e3000f' },
+            { name: 'SDE(Estonia)', x: -3.5, y: 5.5, color: '#E30613' },
+            { name: 'SDP(Finland)', x: -3, y: 3.5, color: '#CD000A' },
+            { name: 'Parti socialiste(France)', x: -2.9, y: 3.2, color: '#FF3366' },
+            { name: 'PASOK(Greece)', x: -2.0, y: 2.0, color: '#56aa2d' },
+			{ name: 'Labour Party(Ireland)', x: -2.5, y: 5.0, color: '#CC0000' },
+            { name: 'Social Democrats(Ireland)', x: -3.5, y: 5.0, color: '#7B2A82' },
+			{ name: 'PD(Italy)', x: -2.0, y: 3, color: '#EF3E36' },
+			{ name: 'SDP(Croatia)', x: -2.8, y: 3.2, color: '#ff0303' },
+			{ name: 'LSDS(Lithuania)', x: -3, y: -0.5, color: '#FF101A' },
+			{ name: 'LSAP(Luxembourg)', x: -1.5, y: 1.5, color: '#CC0000' },
+			{ name: 'SPÖ(Austria)', x: -4, y: 1.5, color: '#E30613' },
+			{ name: 'Lewica(Poland)', x: -5.5, y: 6, color: '#AC145A' },
+			{ name: 'Partido Socialista(Portugal)', x: -1, y: 3.0, color: '#FF66FF' },
+			{ name: 'PSD(Romania)', x: -3.0, y: -3.0, color: '#FF0000' },
+			{ name: 'Socialdemokraterna(Sweden)', x: -2.5, y: 0.5, color: '#E30014' },
+			{ name: 'HLAS(Slovakia)', x: -3, y: -2.5, color: '#ee3a43' },
+			{ name: 'SMER(Slovakia)', x: -4.8, y: -7.5, color: '#CC001C' },
+			{ name: 'Sd(Slovenia)', x: -4.2, y: 4.2, color: '#CC001C' },
+			{ name: 'PSOE(Spain)', x: -2.5, y: 3.5, color: '#EF1C27' },
+			{ name: 'DK(Hungary)', x: -2.0, y: 3.0, color: '#0055A5' },
+			
+        ],
+		'ge': [
+            { name: 'Grüne (Germany)', x: -2.96, y: 6.16, color: '#46962b' },
+            { name: 'Alternativet(Denmark)', x: -5.0, y: 6, color: '#0FCE6E' },
+            { name: 'Volt (Germany)', x: -1.0, y: 7.0, color: '#502379' },
+            { name: 'EER (Estonia)', x: -4.0, y: 5.5, color: '#4CAF50' },
+            { name: 'VIHR(Finland)', x: -1.5, y: 7, color: '#61BF1A' },
+            { name: 'Les verts(France)', x: -5.0, y: 5.5, color: '#00C000' },
+            { name: 'Green party(Ireland)', x: -2, y: 5.5, color: '#99CC33' },
+            { name: 'M(Croatia)', x: 2.7, y: 3.5, color: '#8be022' },
+			{ name: 'ZZS(Latvia)', x: 1.5, y: 7, color: '#258B4C' },
+			{ name: 'DSVL(Lithuania)', x: -1, y: -0.1, color: '#0A1172' },
+			{ name: 'DG(Luxembourg)', x: -1.5, y: 3, color: '#99CC33' },
+			{ name: 'Volt(Luxembourg)', x: -0.5, y: 7.0, color: '#562883' },
+			{ name: 'GRÜNE', x: -4.0, y: 6.0, color: '#8AC440' },
+			{ name: 'Progresīvie(Latvia)', x: -4.5, y: 7.0, color: '#E64632' },
+			{ name: 'Livre(Portugal)', x: -3.5, y: 6.0, color: '#9EC62B' },
+			{ name: 'Miljöpartiet de gröna(Sweden)', x: -3.5, y: 6.0, color: '#53A045' },
+			{ name: 'BNG(Spain)', x: -5.2, y: 4.5, color: '#7CC2E9' },
+			{ name: 'Pirati(Czech Republic)', x: -1.5, y: 6, color: '#000000' },
+			{ name: 'MKKP(Hungary)', x: -2.0, y: 7.5, color: '#FFF900' },
+        ],
+		'lf': [
+            { name: 'PVDA(Belgium)', x: -8.0, y: 2.5, color: '#F65154' },
+            { name: 'Enhedslisten / De Rød-Grønne(Denmark)', x: -7, y: 5.5, color: '#E72522' },
+            { name: 'Die Linke(Germany)', x: -6.60, y: 4.93, color: '#be3075' },
+            { name: 'VAS(Finland)', x: -6.5, y: 6.5, color: '#FF4D00' },
+            { name: 'LFI(France)', x: -8.0, y: 5.5, color: '#C84529' },
+			{ name: 'PCF(France)', x: -6.0, y: 3, color: '#FF0000' },
+            { name: 'SYRIZA(Greece)', x: -4, y: 6, color: '#FA8072' },
+            { name: 'MERA25(Greece)', x: -6, y: 7.5, color: '#EF3FE1' },
+			{ name: 'Sinn Féin(Ireland)', x: -5.0, y: 1.5, color: '#006240' },
+            { name: 'People Before Profit(Ireland)', x: -7.5, y: 6.0, color: '#E5E500' },
+			{ name: 'AVS(Italy)', x: -6.0, y: 6.0, color: '#4CAF50' },
+            { name: 'M5S(Italy)', x: -4.5, y: 1.0, color: '#FFEB3B' },
+			{ name: 'PvdD(Netherlands)', x: -4.8, y: 4.5, color: '#006b28' },
+            { name: 'SP(Netherlands)', x: -6.0, y: 1.0, color: '#ed1c24' },
+            { name: 'Bloco de Esquerda(Portugal)', x: -7.5, y: 7.5, color: '#990000' },
+            { name: 'Coligação Democrática Unitária(Portugal)', x: -2.5, y: 2.8, color: '#D91A1A' },
+            { name: 'Sosialistisk Venstreparti(Norway)', x: -5.5, y: 5.5, color: '#e04040' },
+			{ name: 'Vänsterpartiet(Sweden)', x: -6, y: 4.5, color: '#B00000' },
+			{ name: 'Bildu(Spain)', x: -5.5, y: 5.0, color: '#9CD719' },
+			{ name: 'Sumar(Spain)', x: -2.8, y: 3.2, color: '#E85B6C' },
+			{ name: 'AKEL(Cyprus)', x: -5, y: 5, color: '#B31B1B' },
+			{ name: 'KPÖ(Austria)', x: -7.5, y: 4.0, color: '#AA0000' },
+			{ name: 'DL(Luxembourg)', x: -6.5, y: 4.0, color: '#be3075' },
+            { name: 'KPL(Luxembourg)', x: -7.5, y: 3.0, color: '#CC0000' },
+			{ name: 'KSČM(Czech Republic)', x: -7.0, y: -5.0, color: '#CC0000' }
+        ],
+		'ew': [
+            { name: 'Vŭzrazhdane(Bulgaria)', x: -2, y: -8, color: '#000000' },
+            { name: 'AfD(Germany)', x: 4.78, y: -7.98, color: '#009ee0' },
+            { name: 'REC(France)', x: 5.5, y: -7.5, color: '#404040' },
+            { name: 'Konfederacja(Poland)', x: 7, y: -5.5, color: '#122746' },
+            { name: 'Republika(Slovakia)', x: 0, y: -8.5, color: '#1C305E' },
+            { name: 'SPD(Czech Republic)', x: -1.5, y: -7.5, color: '#1D70B7' },
+            { name: 'MH', x: -1.0, y: -9.0, color: '#007F47' }
+        ],
+        'ch': [
+            { name: 'SVP', x: 5.5, y: -6.5, color: '#008b45' },
+            { name: 'SP', x: -6.0, y: 5.3, color: '#ff0000' },
+            { name: 'Die Mitte', x: 0.5, y: -1.5, color: '#ff7f00' },
+            { name: 'FDP', x: 5.0, y: -0.5, color: '#0066cc' },
+            { name: 'GRÜNE', x: -6.5, y: 6.0, color: '#8ec63f' },
+            { name: 'GLP', x: 1.5, y: 5.5, color: '#c4d600' }
+        ],
+		're': [
+            { name: 'MR (Belgium)', x: 5.1, y: -1, color: '#0047AB' },
+            { name: 'OVLD (Belgium)', x: 4, y: 4, color: '#005eaa' },
+            { name: 'PP/DB (Bulgaria)', x: 1.7, y: 3, color: '#fad630' },
+            { name: 'DPS(Bulgaria)', x: -0.2, y: -2.5, color: '#25608a' },
+			{ name: 'Radikale Venstre(Denmark)', x: 0.5, y: 6.0, color: '#E5007D' },
+            { name: 'Moderaterne(Denmark)', x: 1.5, y: 2.0, color: '#4bc1e8' },
+            { name: 'Venstre(Denmark)', x: 3, y: 0.5, color: '#005392' },
+            { name: 'FDP(Germany)', x: 4.69, y: 3.24, color: '#ffed00' },
+            { name: 'FW(Germany)', x: 2.7, y: -2.7, color: '#ff8d16' },
+			{ name: 'Independent Ireland(Ireland)', x: 3.0, y: -6.0, color: '#53e851' },
+            { name: 'Fianna Fáil(Ireland)', x: 0.5, y: -0.5, color: '#66BB66' },
+			{ name: 'KESK(Finland)', x: 1, y: -3.0, color: '#0E4120' },
+			{ name: 'EN(France)', x: 2.5, y: 3.0, color: '#FFD600' },
+			{ name: 'NEOS(Austria)', x: 4.2, y: 5.5, color: '#E5007D' },
+			{ name: 'D66(Netherlands)', x: 1.0, y: 5.5, color: '#00a651' },
+			{ name: 'HNS(Croatia)', x: 2.5, y: 5.5, color: '#ffce5c' },
+            { name: 'VVD(Netherlands)', x: 5, y: -1.5, color: '#0a2c5c' },
+		    { name: 'USR(Romania)', x: 3.8, y: 4.5, color: '#00AEEF' },
+			{ name: 'Azione(Italy)', x: 0.8, y: 3.5, color: '#2A64A0' },
+			{ name: 'CC(Spain)', x: 1.7, y: -1.5, color: '#FFCD00' },
+            { name: 'PNV(Spain)', x: 2, y: -2.0, color: '#009551' },
+            { name: 'Più Europa(Italy)', x: 0.9, y: 6.0, color: '#EEE000' },
+			{ name: 'Italia Viva(Italy)', x: 2, y: 2.8, color: '#FFAE32' },
+			{ name: 'Gibanje Svoboda(Slovenia)', x: -3, y: 3, color: '#005da5' },
+			{ name: 'Progresívne Slovensko(Slovakia)', x: 0.1, y: 5.5, color: '#E73947' },
+			{ name: 'DP(Luxembourg)', x: 1, y: 2, color: '#0000BB' },
+			{ name: 'Centern(Sweden)', x: 4.8, y: 4.0, color: '#39944A' },
+            { name: 'Liberalerna(Sweden)', x: 3.5, y: 1.0, color: '#0069B4' },
+			{ name: 'Iniciativa Liberal(Portugal)', x: 5.5, y: 3, color: '#00A2E8' },
+			{ name: 'LRLS(Lithuania)', x: 5.5, y: 6, color: '#F29402' },
+			{ name: 'Laisvės partija(Lithuania)', x: 5, y: 7.5, color: '#E3006B' },
+			{ name: 'Latvijas attīstībai(Latvia)', x: 5.5, y: 4.5, color: '#ffcc00' },
+            { name: 'SFP(Finland)', x: 3, y: 3, color: '#FFCC66' },
+			{ name: 'Reformierakond (Estonia)', x: 6, y: 3, color: '#FFDE00' }
+        ],
+        'bg': [
+            { name: 'PB', x: -3, y: -2, color: '#ff0505' },
+            { name: 'PP/DB', x: 1.7, y: 3, color: '#ffea05' },
+            { name: 'GERB', x: 3, y: -2.8, color: '#0597ff' },
+            { name: 'DPS', x: -0.2, y: -2.5, color: '#25608a' },
+            { name: 'Vŭzrazhdane', x: -2, y: -8, color: '#000000' },
+            { name: 'BSP', x: -4, y: -6, color: '#910c0c' }
+        ],
+        'ie': [
+            { name: 'Sinn Féin', x: -5.0, y: 1.5, color: '#006240' },
+            { name: 'Fine Gael', x: 1.5, y: 1.5, color: '#6699FF' },
+            { name: 'Green party', x: -2, y: 5.5, color: '#99CC33' },
+            { name: 'Fianna Fáil', x: 0.5, y: -0.5, color: '#66BB66' },
+            { name: 'Social Democrats', x: -3.5, y: 5.0, color: '#7B2A82' },
+            { name: 'Independent Ireland', x: 3.0, y: -6.0, color: '#53e851' },
+            { name: 'Aontú', x: -0.5, y: -6.5, color: '#44532E' },
+            { name: 'Labour Party', x: -2.5, y: 5.0, color: '#CC0000' },
+            { name: 'People Before Profit (SPBP)', x: -7.5, y: 6.0, color: '#E5E500' }
+        ],
+		'er': [
+            { name: 'N-VA(Belgium)', x: 4.5, y: -4.5, color: '#242424' },
+            { name: 'Danmarksdemokraterne(Denmark)', x: 3.5, y: -3, color: '#1272C2' },
+            { name: 'BD(Germany)', x: 4.7, y: -4.5, color: '#015591' },
+            { name: 'PS(Finland)', x: 4, y: 1, color: '#FEE04D' },
+            { name: 'EL(Greece)', x: 2.6, y: -7.5, color: '#80DAEB' },
+            { name: 'FdI(Italy)', x: 2.5, y: -7.0, color: '#004899' },
+            { name: 'DP(Croatia)', x: 2.5, y: -7.5, color: '#044394' },
+            { name: 'SV(Latvia)', x: 6, y: -6.0, color: '#6767AB' },
+			{ name: 'NA(Latvia)', x: 1.7, y: -7.0, color: '#EFC800' },
+			{ name: 'FrP(Norway)', x: 4.7, y: -4.5, color: '#024C93' },
+			{ name: 'JA21(Netherlands)', x: 6.5, y: -6, color: '#242b57' },
+            { name: 'SGP(Netherlands)', x: 2.0, y: -7.0, color: '#e36a00' },
+			{ name: 'AUR(Romania)', x: -0.5, y: -8, color: '#FFCC00' },
+			{ name: 'Sverigedemokraterna', x: 2.0, y: -7, color: '#FEDF09' },
+			{ name: 'PiS(Poland)', x: -4, y: -6.5, color: '#243b6b' },
+			{ name: 'ODS(Czech Republic)', x: 4, y: -3.0, color: '#034EA2' },
+			{ name: 'ADR(Luxembourg)', x: 3.7, y: -5, color: '#00ADDC' }
+        ],
+        'is': [
+            { name: 'Samfylkingin', x: -2.5, y: 5.5, color: '#ff4d4d' },
+            { name: 'Sjálfstæðisflokkurinn', x: 4.0, y: -0.5, color: '#00ADEF' },
+            { name: 'Miðflokkurinn', x: 5.5, y: -7, color: '#199094' },
+            { name: 'Viðreisn', x: 3.5, y: 4.5, color: '#ff9900' },
+            { name: 'Borgarahreyfingin', x: 1.5, y: 2.5, color: '#8EC83E' },
+            { name: 'Vinstrihreyfingin', x: 1.5, y: 6.5, color: '#2eb82e' },
+            { name: 'Framsóknarflokkurinn', x: -4.5, y: -3, color: '#D40000' },
+            { name: 'Sósíalistaflokkur Íslands', x: -5.5, y: 3, color: '#cc0000' },
+            { name: 'Píratar', x: -2.5, y: 7.0, color: '#522C7F' }
+        ],
+        'ka': [
+            { name: 'HDZ', x: -1, y: -3, color: '#044394' },
+            { name: 'SDP', x: -2.8, y: 3.2, color: '#ff0303' },
+            { name: 'M', x: 2.7, y: 3.5, color: '#8be022' },
+            { name: 'Most', x: 2, y: -6, color: '#ff7b08' },
+            { name: 'DP', x: 2.5, y: -7.5, color: '#044394' },
+            { name: 'Drito', x: 3, y: -3.5, color: '#044394' },
+            { name: 'HSU', x: -4.3, y: 0.1, color: '#044394' },
+            { name: 'HSS', x: -2.8, y: 1, color: '#048524' },
+            { name: 'HNS', x: 2.5, y: 5.5, color: '#ffce5c' },
+            { name: 'IDS', x: 0.5, y: 4, color: '#0dff0d' },
+            { name: 'DOM', x: 2.5, y: -7.4, color: '#000000' }, 
+        ],
+        'tk': [
+            { name: 'AKP', x: 3, y: -7.5, color: '#ffe603' },
+            { name: 'CHP', x: -2.7, y: 4, color: '#eb2f2f' },
+            { name: 'DEM', x: -8, y: 6, color: '#519940' },
+            { name: 'MHP', x: 1.8, y: -7.7, color: '#5c0202' },
+            { name: 'İYİ', x: 1, y: -2, color: '#7a7676' },
+            { name: 'Anahtar Parti', x: 4, y: -6.5, color: '#08123b' },
+            { name: 'YRP', x: 2.2, y: -8.2, color: '#730808' },
+            { name: 'Zafer Partisi', x: 7, y: -8, color: '#ff0808' },
+            { name: 'TİP', x: -8.5, y: 7, color: '#730901' },
+            { name: 'YEP', x: -2.8, y: 6, color: '#7a7a7a' }
+        ],
+        'dk': [
+            { name: 'Enhedslisten / De Rød-Grønne', x: -7, y: 5.5, color: '#E72522' },
+            { name: 'Socialistisk Folkeparti', x: -4.0, y: 3.5, color: '#F05A28' },
+            { name: 'Alternativet', x: -5.0, y: 6, color: '#0FCE6E' },
+            { name: 'Socialdemokraterne', x: -2.0, y: 1.5, color: '#A8161D' },
+            { name: 'Radikale Venstre', x: 0.5, y: 6.0, color: '#E5007D' },
+            { name: 'Moderaterne', x: 1.5, y: 2.0, color: '#4bc1e8' },
+            { name: 'Venstre', x: 3, y: 0.5, color: '#005392' },
+            { name: 'Konservative Folkeparti', x: 4.0, y: -2, color: '#00583C' },
+            { name: 'Danmarksdemokraterne', x: 3.5, y: -3, color: '#1272C2' },
+            { name: 'Dansk Folkeparti', x: 1.0, y: -4.5, color: '#E4BD4A' },
+            { name: 'Borgernes Parti', x: 5.5, y: -3.0, color: '#00c1d4' },
+            { name: 'Liberal Alliance', x: 6.5, y: 0.5, color: '#FA4800' }
+        ],
+        'uk': [
+            { name: 'Labour', x: -2.5, y: 1.5, color: '#E30613' },
+            { name: 'Tories', x: 4.0, y: -4.0, color: '#0087DC' },
+            { name: 'Reform UK', x: 5.5, y: -6.5, color: '#12B6CF' },
+            { name: 'Restore Britain', x: 6.5, y: -7.5, color: '#002F6C' },
+            { name: 'Lib Dems', x: -0.5, y: 7.0, color: '#FAA61A' },
+            { name: 'Greens', x: -5.0, y: 6.5, color: '#6AB023' },
+            { name: 'Plaid Cymru', x: -4.0, y: 2.5, color: '#3F7E44' },
+            { name: 'SNP', x: -3.5, y: 3.0, color: '#FDF38E' }
+        ],
+        'se': [
+            { name: 'Socialdemokraterna', x: -2.5, y: 0.5, color: '#E30014' },
+            { name: 'Sverigedemokraterna', x: 2.0, y: -7, color: '#FEDF09' },
+            { name: 'Moderata samlingspartiet', x: 4.5, y: -2.6, color: '#019CDB' },
+            { name: 'Vänsterpartiet', x: -6, y: 4.5, color: '#B00000' },
+            { name: 'Miljöpartiet de gröna', x: -3.5, y: 6.0, color: '#53A045' },
+            { name: 'Centern', x: 4.8, y: 4.0, color: '#39944A' },
+            { name: 'Kristdemokraterna', x: 3.5, y: -4.5, color: '#000077' },
+            { name: 'Liberalerna', x: 3.5, y: 1.0, color: '#0069B4' }
+        ],
+        'fi': [
+            { name: 'SDP', x: -3, y: 3.5, color: '#CD000A' },
+            { name: 'KOK', x: 5, y: -0.5, color: '#136389' },
+            { name: 'PS', x: 4, y: 1, color: '#FEE04D' },
+            { name: 'KESK', x: 1, y: -3.0, color: '#0E4120' },
+            { name: 'VAS', x: -6.5, y: 6.5, color: '#FF4D00' },
+            { name: 'VIHR', x: -1.5, y: 7, color: '#61BF1A' },
+            { name: 'SFP', x: 3, y: 3, color: '#FFCC66' },
+            { name: 'KD', x: 3.5, y: -6.5, color: '#0235A4' },
+            { name: 'LIIK', x: 5.3, y: 0.3, color: '#B41F79' }
+        ],
+        'gr': [
+            { name: 'Néa Dimokratía', x: 4.0, y: -1, color: '#005AC0' },
+            { name: 'SYRIZA', x: -4, y: 6, color: '#FA8072' },
+            { name: 'PASOK', x: -2.0, y: 2.0, color: '#56aa2d' },
+            { name: 'KKE', x: -8.5, y: -5.0, color: '#C80000' },
+            { name: 'Spartiátes', x: 0.3, y: -8.5, color: '#e9b460' },
+            { name: 'EL (Elliniki Lysi)', x: 2.6, y: -7.5, color: '#80DAEB' },
+            { name: 'NIKI', x: 1.0, y: -8.0, color: '#c15127' },
+            { name: 'MERA25', x: -6, y: 7.5, color: '#EF3FE1' },
+            { name: 'Foní Logikís', x: 5.0, y: -7.8, color: '#0094FF' },
+            { name: 'Proodeftiki Enosis', x: -4.5, y: 3, color: '#9F1897' }
+        ],
+        'de': [
+            { name: 'AfD', x: 4.7, y: -7.5, color: '#009ee0' },
+            { name: 'CDU/CSU', x: 3, y: -3.7, color: '#1c1c1c' },
+            { name: 'SPD', x: -2.8, y: 2.5, color: '#e3000f' },
+            { name: 'GRÜNE', x: -3, y: 6.1, color: '#46962b' },
+            { name: 'Die Linke', x: -6.5, y: 5, color: '#be3075' },
+            { name: 'FDP', x: 4.7, y: 3.2, color: '#ffed00' },
+            { name: 'FW', x: 2.7, y: -2.7, color: '#ff8d16' },
+            { name: 'BD', x: 4.7, y: -4.5, color: '#015591' },
+            { name: 'Heimat', x: 1, y: -8, color: '#d79e2a' },
+            { name: 'BSW', x: -4., y: -3.7, color: '#7d264f' },
+            { name: 'Volt', x: -1.0, y: 7.0, color: '#502379' }
+        ],
+        'es': [
+            { name: 'Sumar', x: -2.8, y: 3.2, color: '#E85B6C' },
+            { name: 'Bildu', x: -5.5, y: 5.0, color: '#9CD719' },
+            { name: 'BNG', x: -5.2, y: 4.5, color: '#7CC2E9' },
+            { name: 'PSOE', x: -2.5, y: 3.5, color: '#EF1C27' },
+            { name: 'CC', x: 1.7, y: -1.5, color: '#FFCD00' },
+            { name: 'PNV', x: 2, y: -2.0, color: '#009551' },
+            { name: 'UPN', x: 3.8, y: -3.3, color: '#000000' },
+            { name: 'Partido Popular', x: 4.0, y: -3.0, color: '#00A8FF' },
+            { name: 'Vox', x: 7.0, y: -8.0, color: '#63BE21' },
+            { name: 'SALF', x: 5.7, y: -6.5, color: '#00FF8A' }
+        ],
+        'pt': [
+            { name: 'Aliança Democrática', x: 3.5, y: -4.5, color: '#0A4A8F' },
+            { name: 'Partido Socialista', x: -1, y: 3.0, color: '#FF66FF' },
+            { name: 'Chega', x: 5.5, y: -7.5, color: '#102C57' },
+            { name: 'Iniciativa Liberal', x: 5.5, y: 3, color: '#00A2E8' },
+            { name: 'Livre', x: -3.5, y: 6.0, color: '#9EC62B' },
+            { name: 'Coligação Democrática Unitária', x: -2.5, y: 2.8, color: '#D91A1A' },
+            { name: 'Bloco de Esquerda', x: -7.5, y: 7.5, color: '#990000' },
+            { name: 'Partido pelos Animais (PAN)', x: -3.5, y: 5.5, color: '#008080' }
+        ],
+        'at': [
+            { name: 'FPÖ', x: 2.5, y: -7.0, color: '#005CA5' },
+            { name: 'ÖVP', x: 3.5, y: -3.5, color: '#63C3D0' },
+            { name: 'SPÖ', x: -4, y: 1.5, color: '#E30613' },
+            { name: 'NEOS', x: 4.2, y: 5.5, color: '#E5007D' },
+            { name: 'GRÜNE', x: -4.0, y: 6.0, color: '#8AC440' },
+            { name: 'KPÖ', x: -7.5, y: 4.0, color: '#AA0000' }
+        ],
+        'be': [
+            { name: 'VB', x: 3.0, y: -7.5, color: '#FFE000' },
+            { name: 'N-VA', x: 4.5, y: -4.5, color: '#242424' },
+            { name: 'LE', x: 0.5, y: -2.0, color:  '#00F3FF' },
+            { name: 'CD&V', x: 1.5, y: -3.5, color: '#FF8C00' },
+            { name: 'OVLD', x: 4.0, y: 4.0, color: '#0054A6' },
+            { name: 'MR', x: 5, y: -0.5, color: '#0047AB' },
+            { name: 'Vooruit', x: -3.5, y: 2.5, color: '#E10C0F' },
+            { name: 'PS', x: -5.5, y: 3.0, color: '#FF0004' },
+            { name: 'PVDA', x: -8.0, y: 2.5, color: '#F65154' }
+        ],
+        'it': [
+            { name: 'FdI', x: 2.5, y: -7.0, color: '#004899' },
+            { name: 'Lega', x: 3.0, y: -6.5, color: '#026611' },
+            { name: 'Forza Italia', x: 4.0, y: -3.0, color: '#0797f7' },
+            { name: 'Noi Moderati', x: 2.0, y: -2.5, color: '#F4A261' },
+            { name: 'Azione', x: 0.8, y: 3.5, color: '#2A64A0' },
+            { name: 'Più Europa', x: 0.9, y: 6.0, color: '#EEE000' },
+			{ name: 'Italia Viva', x: 2, y: 2.8, color: '#FFAE32' },
+            { name: 'PD', x: -2.0, y: 3, color: '#EF3E36' },
+            { name: 'M5S', x: -4.5, y: 1.0, color: '#FFEB3B' },
+            { name: 'FN', x: 2, y: -8.0, color: '#000000' },
+            { name: 'AVS', x: -6.0, y: 6.0, color: '#4CAF50' }
+        ],
+        'fr': [
+            { name: 'REC', x: 5.5, y: -7.5, color: '#404040' },
+            { name: 'RN', x: 1.5, y: -5.5, color: '#0D378A' },
+            { name: 'DLF', x: 3.0, y: -6.0, color: '#8040C0' },
+            { name: 'LR', x: 4.0, y: -3.5, color: '#0066CC' },
+            { name: 'DVD', x: 4.0, y: -7.0, color: '#0000b2' },
+            { name: 'EN', x: 2.5, y: 3.0, color: '#FFD600' },
+            { name: 'DVG', x: -3.0, y: 2.5, color: '#c41e3a' },
+            { name: 'EXG', x: -6.2, y: 3.7, color: '#dd0000' },
+			{ name: 'Parti socialiste', x: -2.9, y: 3.2, color: '#FF3366' },
+			{ name: 'Les verts', x: -5.0, y: 5.5, color: '#00C000' },
+			{ name: 'Generation s', x: -3.0, y: 2.7, color: '#CD3266' },
+			{ name: 'LFI', x: -8.0, y: 5.5, color: '#C84529' },
+			{ name: 'PCF', x: -6.2, y: 3, color: '#FF0000' },
+            { name: 'NFP', x: -5.0, y: 4.7, color: '#de38b4' }
+        ],
+        'nl': [
+            { name: 'PRO', x: -4.5, y: 5.0, color: '#df191e' },
+            { name: 'D66', x: 1.0, y: 5.5, color: '#00a651' },
+            { name: 'VVD', x: 5, y: -1.5, color: '#0a2c5c' },
+            { name: 'PVV', x: 1.5, y: -5.5, color: '#0f2440' },
+            { name: 'CDA', x: 1.5, y: -2.0, color: '#007c5c' },
+            { name: 'JA21', x: 6.5, y: -6, color: '#242b57' },
+            { name: 'FvD', x: 7, y: -8.5, color: '#841919' },
+            { name: 'PvdD', x: -4.8, y: 4.5, color: '#006b28' },
+            { name: '50+', x: -1, y: -1.5, color: '#92278f' },
+            { name: 'SP', x: -6.0, y: 1.0, color: '#ed1c24' },
+            { name: 'CU', x: -1.5, y: -2.5, color: '#00a7e1' },
+            { name: 'SGP', x: 2.0, y: -7.0, color: '#e36a00' },
+            { name: 'DENK', x: -3.5, y: -2.0, color: '#009f9d' },
+            { name: 'Volt', x: -0.5, y: 7.0, color: '#502379' },
+            { name: 'BBB', x: 2.0, y: -5, color: '#9bbb2d' }
+        ],
+        'no': [
+            { name: 'Rødt', x: -8, y: 4.0, color: '#d92323' },
+            { name: 'Sosialistisk Venstreparti', x: -5.5, y: 5.5, color: '#e04040' },
+            { name: 'AP', x: -2.5, y: 2.0, color: '#da291c' },
+            { name: 'Miljøpartiet De Grønne', x: -1, y: 6.5, color: '#5ca632' },
+            { name: 'Senterpartiet / Bondepartiet', x: -2.0, y: -3.0, color: '#008542' },
+            { name: 'Kristelig Folkeparti', x: 0.5, y: -4.5, color: '#fdb913' },
+            { name: 'Venstre', x: 2.0, y: 6.0, color: '#0067a5' },
+            { name: 'Høyre', x: 4.0, y: 0.5, color: '#87ADD7' },
+            { name: 'FrP', x: 4.7, y: -4.5, color: '#024C93' }
+        ],
+        'ro': [
+            { name: 'PSD', x: -3.0, y: -3.0, color: '#FF0000' },
+            { name: 'PNL', x: 3.5, y: -1.0, color: '#0054A6' },
+            { name: 'USR', x: 3.8, y: 4.5, color: '#00AEEF' },
+            { name: 'AUR', x: -0.5, y: -8, color: '#FFCC00' },
+            { name: 'UDMR', x: 0.5, y: -1.5, color: '#007F47' },
+            { name: 'SOS', x: -1.5, y: -8.5, color: '#1E3A8A' },
+            { name: 'SENS', x: -4.5, y: 6.5, color: '#10B981' },
+            { name: 'POT', x: -1.0, y: -8.5, color: '#FFCC00' }
+        ],
+        'ru': [
+            { name: 'YeR (United Russia)', x: 2.0, y: -8.0, color: '#0B52A0' },
+            { name: 'KPRF', x: -7.5, y: -7.0, color: '#D71A21' },
+            { name: 'LDPR', x: 0, y: -9.0, color: '#FFCC00' },
+            { name: 'NL (New People)', x: 4.7, y: -1.5, color: '#00A19C' },
+            { name: 'SRPZP', x: -3.0, y: -6.5, color: '#E25E24' },
+            { name: 'RPPSS', x: -4.0, y: -4.5, color: '#9B51E0' },
+            { name: 'Yabloko', x: 1, y: 6.0, color: '#27AE60' }
+        ],
+        'hu': [
+            { name: 'Fidesz', x: -2.0, y: -6, color: '#FD5E0F' },
+            { name: 'Tisza', x: 1, y: -0.5, color: '#D24548' },
+            { name: 'DK', x: -2.0, y: 3.0, color: '#0055A5' },
+            { name: 'MH', x: -1.0, y: -9.0, color: '#007F47' },
+            { name: 'MKKP', x: -2.0, y: 7.5, color: '#FFF900' }
+        ],
+        'ee': [
+            { name: 'RE (Reformierakond)', x: -2.5, y: 2.5, color: '#FFDE00' },
+            { name: 'KE (Keskerakond)', x: -2.0, y: -1.5, color: '#00985A' },
+            { name: 'EKRE', x: 1.5, y: -7.5, color: '#0072C6' },
+            { name: 'Isamaaliit (Isamaa)', x: 4.0, y: -4.5, color: '#00AEEF' },
+            { name: 'SDE', x: -3.5, y: 5.5, color: '#E30613' },
+            { name: 'E200 (Eesti 200)', x: 3.0, y: 6.0, color: '#0B8C9C' },
+            { name: 'PP (Parempoolsed)', x: 7.0, y: 1.0, color: '#FF5D00' },
+            { name: 'EER (Eestimaa Rohelised)', x: -4.0, y: 5.5, color: '#4CAF50' }
+        ],
+        'pl': [
+            { name: 'KO (Koalicja Obywatelska)', x: 1.7, y: 2, color: '#FFA056' },
+            { name: 'PiS (Prawo i Sprawiedliwość)', x: -4, y: -6.5, color: '#243b6b' },
+            { name: 'Konfederacja', x: 7, y: -5.5, color: '#122746' },
+            { name: 'KKP', x: 5.0, y: -8.0, color: '#800000' },
+            { name: 'Lewica', x: -5.5, y: 6, color: '#AC145A' },
+            { name: 'Razem', x: -5.9, y: 6.4, color: '#870F57' },
+			{ name: 'Rozwój Plus', x: 4.3, y: -4.5, color: '#4399d3' },
+            { name: 'PSL', x: -1, y: -3.0, color: '#1BB100' },
+            { name: 'PL2050 (Polska 2050)', x: 2, y: 0, color: '#FAC300' }
+        ],
+        'rs': [
+            { name: 'SNS', x: 2, y: -6, color: '#0054A5' },
+            { name: 'SPS', x: -3.0, y: -5.0, color: '#DD0000' },
+            { name: 'SSP', x: -2.0, y: 3.0, color: '#0033A0' },
+            { name: 'NPS', x: 0, y: -2.0, color: '#1F4E79' },
+            { name: 'ZLF', x: -5, y: 5.5, color: '#4CAF50' },
+            { name: 'NDSS', x: 0, y: -7.0, color: '#002F6C' },
+            { name: 'MI–SN', x: 0, y: -7.5, color: '#800080' }
+        ],
+        'cz': [
+            { name: 'ANO', x: -2.0, y: -4, color: '#261060' },
+            { name: 'STAN', x: 1.5, y: 1.5, color: '#CD0F69' },
+            { name: 'ODS', x: 4, y: -3.0, color: '#034EA2' },
+            { name: 'Pirati', x: -1.5, y: 6, color: '#000000' },
+            { name: 'SPD', x: -1.5, y: -7.5, color: '#1D70B7' },
+            { name: 'Moto', x: 4.2, y: -5.0, color: '#007FC6' },
+            { name: 'NČ', x: 3, y: -6.5, color: '#CE1126' },
+            { name: 'TOP 09', x: 4, y: 1.3, color: '#993366' },
+            { name: 'KDU', x: 1.0, y: -5.5, color: '#FFD700' },
+            { name: 'KSČM', x: -7.0, y: -5.0, color: '#CC0000' }
+        ],
+        'lu': [
+            { name: 'CSV', x: 1, y: -2.5, color: '#ee7d00' },
+            { name: 'DP', x: 1, y: 2, color: '#0000BB' },
+            { name: 'LSAP', x: -1.5, y: 1.5, color: '#CC0000' },
+            { name: 'ADR', x: 3.7, y: -5, color: '#00ADDC' },
+            { name: 'DG', x: -1.5, y: 3, color: '#99CC33' },
+            { name: 'DL', x: -6.5, y: 4.0, color: '#be3075' },
+            { name: 'KPL', x: -7.5, y: 3.0, color: '#CC0000' },
+            { name: 'Pirat', x: 1, y: 0, color: '#800080' },
+            { name: 'Fokus', x: 2.0, y: 2.0, color: '#20B2AA' },
+            { name: 'Lib', x: 6.5, y: 5.0, color: '#FFD700' },
+            { name: 'Volt', x: -0.5, y: 7.0, color: '#562883' }
+        ],
+        'us': [
+            { name: 'Republican Party', x: 6.0, y: -5.0, color: '#E81B23' },
+            { name: 'Democratic Party', x: 1.0, y: 3.0, color: '#3333FF' },
+            { name: 'Libertarian Party', x: 7.0, y: 6.5, color: '#FED105' },
+            { name: 'Green Party', x: -6.0, y: 6.0, color: '#17AA5C' },
+            { name: 'Constitution Party', x: 4.5, y: -8.0, color: '#A33038' }
+        ],
+        'ca': [
+            { name: 'LPC', x: -0.5, y: 3.5, color: '#D71920' },
+            { name: 'CPC', x: 4.5, y: -4.0, color: '#1A4782' },
+            { name: 'NDP', x: -4.5, y: 5.5, color: '#F4A420' },
+            { name: 'BQ', x: -3.0, y: 2.0, color: '#0088CE' },
+            { name: 'GPC', x: -4.5, y: 6.5, color: '#3D9B35' },
+            { name: 'PPC', x: 7.0, y: -6.5, color: '#522E91' }
+        ],
+        'au': [
+            { name: 'Labor Party', x: -2.5, y: 2.5, color: '#DE3533' },
+            { name: 'The Coalition', x: 4.0, y: -3.5, color: '#1C4F9C' },
+            { name: 'Greens', x: -5.5, y: 6.0, color: '#009C4D' },
+            { name: 'One Nation', x: 2.5, y: -7.5, color: '#F36C21' },
+            { name: 'Katter’s Australian Party', x: -3.5, y: -6.0, color: '#B30000' }
+        ]
+    };
+
+    let hasBeenRevealed = false;
+
+    // Helper function: convert HEX color code to RGBA with transparency
+    function hexToRgba(hex, alpha = 0.25) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) {
+            hex = hex.split('').map(char => char + char).join('');
+        }
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function showIdeologyTooltip(e, name) {
+        e.stopPropagation();
+        ideologyTooltip.innerText = name;
+        const rect = compassContainer.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+
+        // Constrain horizontally so the tooltip isn't cut off on the side
+        const margin = 60;
+        x = Math.min(Math.max(x, margin), rect.width - margin);
+
+        // Near the top edge: show tooltip below instead of above the click
+        if (y < 30) {
+            ideologyTooltip.classList.add('flip-below');
+        } else {
+            ideologyTooltip.classList.remove('flip-below');
+        }
+
+        ideologyTooltip.style.left = `${x}px`;
+        ideologyTooltip.style.top = `${y}px`;
+        ideologyTooltip.classList.add('visible');
+    }
+
+    document.addEventListener('click', () => {
+        ideologyTooltip.classList.remove('visible');
+    });
+
+    function renderIdeologyZones() {
+        const oldZones = compassContainer.querySelectorAll('.ideology-zone');
+        oldZones.forEach(z => z.remove());
+
+        ideologyZonesData.forEach(zone => {
+            const el = document.createElement('div');
+            el.className = `ideology-zone ${showIdeologies ? '' : 'hidden'}`;
+            // The name is NOT displayed - only as a tooltip on click
+            el.setAttribute('data-name', zone.name);
+
+            // X-axis: -10 to +10 -> 0% to 100%
+            const left = ((zone.xMin + 10) / 20) * 100;
+            const width = ((zone.xMax - zone.xMin) / 20) * 100;
+
+            // Y-axis: Conservative/Authoritarian (negative) at top -> -10 corresponds to 0%
+            // Y-axis: Liberal (positive) at bottom -> +10 corresponds to 100%
+            const top = ((zone.yMin + 10) / 20) * 100;
+            const height = ((zone.yMax - zone.yMin) / 20) * 100;
+
+            el.style.left = `${left}%`;
+            el.style.width = `${width}%`;
+            el.style.top = `${top}%`;
+            el.style.height = `${height}%`;
+            
+            // Full opacity so the color is clearly visible (not transparent)
+            el.style.backgroundColor = zone.color;
+
+            // Tooltip with the ideology name only appears on click
+            el.addEventListener('click', (e) => showIdeologyTooltip(e, zone.name));
+
+            compassContainer.appendChild(el);
+        });
+    }
+
+    function toggleIdeologies() {
+        showIdeologies = !showIdeologies;
+        if (showIdeologies) {
+            toggleIdeologyBtn.classList.add('active');
+            toggleIdeologyBtn.innerText = 'Hide ideology zones';
+        } else {
+            toggleIdeologyBtn.classList.remove('active');
+            toggleIdeologyBtn.innerText = 'Show ideology zones';
+        }
+        
+        const zones = compassContainer.querySelectorAll('.ideology-zone');
+        zones.forEach(z => {
+            if (showIdeologies) {
+                z.classList.remove('hidden');
+            } else {
+                z.classList.add('hidden');
+            }
+        });
+    }
+
+    function setupPartyPositions() {
+        const oldDots = compassContainer.querySelectorAll('.party-dot');
+        oldDots.forEach(dot => dot.remove());
+
+        const currentCountry = countrySelect.value;
+        const parties = countriesData[currentCountry] || [];
+
+        parties.forEach((party, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'party-dot';
+            dot.id = `party-dynamic-${index}`;
+            dot.setAttribute('data-name', party.name);
+            dot.style.backgroundColor = party.color;
+            
+            if(['#ffed00', '#FFDE00', '#FDF38E', '#FFEB3B', '#EEE000', '#FFB400', '#fdb913', '#FFE000', '#FFCC00', '#FFF900', '#faaf40', '#FED105', '#FAC300', '#FFCD00', '#c4d600', '#ff9900', '#99cc00', '#9EC62B', '#ffd500', '#ffdd00', '#F4A420', '#ffcc00', '#FFD700', '#00FF00'].includes(party.color)) {
+                dot.style.boxShadow = '0 2px 6px rgba(0,0,0,0.4)';
+            }
+
+            const px = ((party.x + 10) / 20) * 100;
+            const py = ((party.y + 10) / 20) * 100;
+            dot.style.left = `${px}%`;
+            dot.style.top = `${py}%`;
+
+            compassContainer.appendChild(dot);
+        });
+    }
+
+    function changeCountry() {
+        setupPartyPositions();
+    }
+
+    function updateSliderTrack(slider) {
+        const min = parseFloat(slider.min);
+        const max = parseFloat(slider.max);
+        const val = parseFloat(slider.value);
+        const percent = ((val - min) / (max - min)) * 100;
+        slider.style.background = `linear-gradient(to right, var(--track-fill) 0%, var(--track-fill) ${percent}%, var(--track-empty) ${percent}%, var(--track-empty) 100%)`;
+    }
+
+    function updateCompass() {
+        let totalX = 0;
+        xSliders.forEach(slider => totalX += parseFloat(slider.value));
+        const avgX = totalX / xSliders.length;
+
+        let totalY = 0;
+        ySliders.forEach(slider => totalY += parseFloat(slider.value));
+        const avgY = totalY / ySliders.length;
+
+        const posX = ((avgX + 10) / 20) * 100;
+        const posY = ((avgY + 10) / 20) * 100;
+
+        compassDot.style.left = `${posX}%`;
+        compassDot.style.top = `${posY}%`;
+
+        // Social value is displayed inverted: positive = Authoritarian, negative = Libertarian
+        const socialDisplay = -avgY;
+
+        resultCoords.innerText = `Economic Left/Right: ${avgX.toFixed(2)}`;
+        resultCoords2.innerText = `Social Libertarian/Authoritarian: ${socialDisplay.toFixed(2)}`;
+    }
+
+    function revealResults() {
+        hasBeenRevealed = true;
+        compassContainer.classList.remove('blurred');
+        mobileOverlay.classList.add('hidden');
+        compassDot.style.display = 'block';
+        resultsBox.style.display = 'block';
+        resetBtn.style.display = 'inline-block';
+        updateCompass();
+
+        if(window.innerWidth <= 1024) {
+            resultsBox.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function resetCompass() {
+        hasBeenRevealed = false;
+        compassContainer.classList.add('blurred');
+        mobileOverlay.classList.remove('hidden');
+        compassDot.style.display = 'none';
+        resultsBox.style.display = 'none';
+        resetBtn.style.display = 'none';
+
+        allSliders.forEach(slider => {
+            slider.value = 0;
+            updateSliderTrack(slider);
+        });
+    }
+
+    allSliders.forEach(slider => {
+        slider.addEventListener('input', () => {
+            updateSliderTrack(slider);
+            if (hasBeenRevealed) updateCompass();
+        });
+    });
+
+    renderIdeologyZones();
+    setupPartyPositions();
+    allSliders.forEach(slider => updateSliderTrack(slider));
+</script>
+</body>
+</html>
