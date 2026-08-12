@@ -44,3 +44,9 @@ If you encounter any bugs, notice inaccurate party coordinates, or have ideas fo
 
 1. Download or clone this repository.
 2. Open `index.html` in any modern web browser.
+
+---
+
+## Latest update
+1. removed ideology neoliberalism
+2. Added ideologies: Paleolibertarianism, market conservatism (subject to change) and right liberalism
